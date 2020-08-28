@@ -1,0 +1,107 @@
+<!--index.wxml-->
+<view class="container-layout">
+<!-- 8.16修改：加上授权登录部分 -->
+<block wx-if="{{showAuthorPage}}">
+  <view class="container" >
+    <view class="userinfo" >
+      <block wx:if="{{!hasUserInfo && canIUse}}" class='show-author' >
+     </block>
+     <block wx:else>
+     <!-- <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image> -->
+     <button  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo" class='get-userinfo'>授权登录</button>
+       
+       <!-- <text class="userinfo-nickname">{{userInfo.nickName}}</text> -->
+     </block>
+   </view>
+ </view>
+</block>
+	<!--地图-->
+	<view class='map-wrapper' style='height:{{mapHeight}}'>
+		<map class='map' id='myMap' longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" show-location="true" markers="{{locationMarkers}}" bindmarkertap="bindMakertap" bindcontroltap='controlTap' bindregionchange='regionChange' controls='{{controls}}' bindtap='bindMapTap' subkey="P2KBZ-YH7WX-SLV42-ZEW2Y-GY3CV-SQFXF" layer-style="2">
+			<!--顶部提示-->
+			<cover-view class='cover-tip-wrapper'>
+				<!-- 8.14修改，加上bindtap -->
+				<cover-view class='cover-tip-content'>
+					<cover-image class='trumpet-icon' src='../../img/myfriend.png' bindtap="showFriendList">
+						<!-- 8.13修改：改为friend.png -->
+					</cover-image>
+					<cover-view class='tip-text'></cover-view>
+					<cover-image class='more' src='../../img/more.png' bindtap='showNewMarkerClick'></cover-image>
+				</cover-view>
+			</cover-view>
+
+
+			<!--8.14修改：加上好友列表显示模块  -->
+			<block wx:if="{{showFriend}}">
+				<scroll-view scroll-y="true" class="friList">
+					<view wx:for="{{friendList}}" wx:for-index="index">
+						<!-- 8.15修改：在点击对应好友Item时，将该好友的信息传递给currentFriend -->
+						<!-- <view class="bottomLine" wx:if="{{index==0}}"></view> -->
+						<view class="friItem" bindtap="clickItem" data-name="{{item.name}}" data-wxid="{{item.wxid}}" data-latitude="{{item.latitude}}" data-longitude="{{item.longitude}}">
+							<view class="kongge"></view>
+							<image class='frdlist-icon' src='../../img/icecream.png'></image>
+							<view class="kongge2"></view>
+							{{ item.name}}
+						</view>
+						<view class="bottomLine"></view>
+						<view class="friItem" wx:if="{{index===(friendList.length-1)}}" bindtap="addFriend">
+							　<view class="kongge2"></view>
+							<image class='frdlist-icon' src='../../img/add.png'></image>
+							<view class="kongge2"></view>
+							添加好友...
+						</view>
+						<view class="bottomLine" wx:if="{{index===(friendList.length-1)}}"></view>
+					</view>
+				</scroll-view>
+			</block>
+
+			<!--8.14修改：右边菜单  -->
+			<cover-view class="page-section" wx:if='{{showPersonalizedLocation}}'>
+				<cover-view class="flex-wrp">
+					<cover-view class="bc_green" id='1' bindtap='uploadInfoClick'>
+						<cover-image class="pin-icon" src='../../img/pin.png'></cover-image>
+						<cover-view class="flex-item row-title">自定义位置</cover-view>
+					</cover-view>
+					<cover-view class="bc_red" id='2' bindtap='uploadInfoClick'>
+						<cover-image class="near-icon" src='../../img/near.png'></cover-image>
+						<cover-view class="flex-item row2-title">移动视野</cover-view>
+					</cover-view>
+				</cover-view>
+			</cover-view>
+		</map>
+		<!--自定义位置列表-->
+
+
+
+		<!--定位当前位置-->
+		<cover-view class='cover-layout' bindtap='selfLocationClick'>
+			<cover-image class='self-location' src='../../img/self-location.png'></cover-image>
+		</cover-view>
+
+	</view>
+
+
+	<!--底部布局-->
+	<view class='bottom-layout' id='bottom-layout'>
+		<view class='bottom-wrapper'>
+		<!--底下的box-->
+			<view upload-wrapper wx:if='{{showConfirm}}'>
+				<!--点击上传信息-->
+				<view class='cancel-publish-layout'>
+					<view class='cancel-btn flex-center' bindtap='cancelClick'>取消</view>
+					<view class='text-chooseLoc flex-center' wx:if="{{flag}}">选择自定义位置</view>
+					<view class='text-chooseLoc flex-center' wx:else>选择视野目标</view>
+				</view>
+				<view class='line'></view>
+				<view class='location-wrapper' bindtap='chooseAddress'>
+					<image class='location-icon' src='../../img/location-icon.png'></image>
+					<view class='address-wrapper'>
+						<text class='location-address'>{{selectAddress}}</text>
+					</view>
+				</view>
+
+			</view>
+<!--底下的box-->
+		</view>
+	</view>
+</view>
